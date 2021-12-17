@@ -1,16 +1,13 @@
+from pathlib import Path
+from sentence_transformers import SentenceTransformer
 import torch
-from transformers import BertTokenizer, BertModel
 
 
 def run_model(text: str) -> torch.Tensor:
-    return (
-        model(**tokenizer(text, return_tensors="pt"))
-        .last_hidden_state[0]
-        .mean(0)
-        .detach()
-        .numpy()
-    )
+    return model.encode([text])[0]
 
 
-model = BertModel.from_pretrained("bert-base-uncased")
-tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
+model = SentenceTransformer(
+    Path(__file__).parent.parent
+    / "checkpoints/classification_output/v4_training_nli_roberta-base"
+)
